@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Celestial Whispers — AI-Powered Natal Chart Readings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Periwinkle OKLCH Palette */
+      --ana-1: oklch(67% 0.164 252);
+      --ana-2: oklch(47% 0.118 222);
+      --ana-3: oklch(57% 0.133 232);
+      --ana-4: oklch(82% 0.125 242);
+      --ana-5: oklch(92% 0.103 267);
+      --ana-6: oklch(99% 0.089 282);
+
+      /* Semantic colors */
+      --bg-primary: oklch(99% 0.02 270);
+      --bg-dark: oklch(15% 0.08 252);
+      --text-primary: oklch(20% 0.05 252);
+      --text-secondary: oklch(45% 0.08 252);
+      --text-muted: oklch(55% 0.06 252);
+      --accent: var(--ana-1);
+      --accent-dark: var(--ana-2);
+
+      /* Typography scale */
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body: 'Fraunces', Georgia, serif;
+
+      /* Spacing rhythm */
+      --space-xs: 0.5rem;
+      --space-sm: 1rem;
+      --space-md: 2rem;
+      --space-lg: 4rem;
+      --space-xl: 8rem;
+      --space-2xl: 12rem;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Editorial Typography */
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+
+    h1 {
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 300;
+    }
+
+    h2 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 350;
+    }
+
+    h3 {
+      font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+      font-weight: 400;
+    }
+
+    p {
+      font-size: 1.125rem;
+      max-width: 65ch;
+    }
+
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 var(--space-md);
+    }
+
+    .container--narrow {
+      max-width: 900px;
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: var(--space-sm) 0;
+      background: linear-gradient(180deg, var(--bg-primary) 0%, transparent 100%);
+      transition: background 0.4s ease;
+    }
+
+    nav.scrolled {
+      background: oklch(99% 0.02 270 / 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 500;
+      font-style: italic;
+      color: var(--ana-2);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo-symbol {
+      font-size: 1.75rem;
+      font-style: normal;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: var(--space-md);
+      align-items: center;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--ana-1);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 2rem;
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 500;
+      text-decoration: none;
+      border: none;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn--primary {
+      background: var(--ana-2);
+      color: #fff;
+      box-shadow: 0 4px 24px oklch(47% 0.118 222 / 0.3);
+    }
+
+    .btn--primary:hover {
+      background: var(--ana-3);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px oklch(47% 0.118 222 / 0.4);
+    }
+
+    .btn--secondary {
+      background: transparent;
+      color: var(--ana-2);
+      border: 1.5px solid var(--ana-2);
+    }
+
+    .btn--secondary:hover {
+      background: var(--ana-2);
+      color: var(--ana-6);
+    }
+
+    .btn--large {
+      padding: 1.25rem 3rem;
+      font-size: 1.125rem;
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding: var(--space-xl) 0;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+    }
+
+    .hero-gradient {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, oklch(92% 0.103 267 / 0.5) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 50% at 80% 20%, oklch(82% 0.125 242 / 0.3) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 20% 80%, oklch(67% 0.164 252 / 0.15) 0%, transparent 50%);
+    }
+
+    .celestial-orbs {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(1px);
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .orb--1 {
+      width: 400px;
+      height: 400px;
+      top: 10%;
+      right: -100px;
+      background: radial-gradient(circle at 30% 30%, oklch(82% 0.125 242 / 0.4), oklch(67% 0.164 252 / 0.1));
+      animation-delay: 0s;
+    }
+
+    .orb--2 {
+      width: 250px;
+      height: 250px;
+      top: 60%;
+      left: 5%;
+      background: radial-gradient(circle at 60% 40%, oklch(92% 0.103 267 / 0.5), oklch(82% 0.125 242 / 0.1));
+      animation-delay: -7s;
+    }
+
+    .orb--3 {
+      width: 150px;
+      height: 150px;
+      top: 30%;
+      left: 30%;
+      background: radial-gradient(circle at 50% 50%, oklch(67% 0.164 252 / 0.3), transparent);
+      animation-delay: -14s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(20px, -30px) rotate(5deg); }
+      50% { transform: translate(-10px, 20px) rotate(-3deg); }
+      75% { transform: translate(15px, 10px) rotate(2deg); }
+    }
+
+    /* Star field */
+    .stars {
+      position: absolute;
+      inset: 0;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--ana-2);
+      border-radius: 50%;
+      opacity: 0.4;
+      animation: twinkle 3s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.3); }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.85rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ana-2);
+      margin-bottom: var(--space-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .hero-eyebrow::before,
+    .hero-eyebrow::after {
+      content: '✦';
+      font-size: 0.7rem;
+    }
+
+    .hero h1 {
+      color: var(--ana-2);
+      margin-bottom: var(--space-md);
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--ana-1);
+    }
+
+    .hero-subtitle {
+      font-size: 1.35rem;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-lg);
+      font-weight: 350;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      justify-content: center;
+      margin-bottom: var(--space-lg);
+    }
+
+    .hero-social-proof {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-md);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .avatar-stack {
+      display: flex;
+    }
+
+    .avatar-stack span {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--ana-4), var(--ana-1));
+      border: 2px solid var(--bg-primary);
+      margin-right: -10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+    }
+
+    /* Zodiac wheel decoration */
+    .zodiac-wheel {
+      position: absolute;
+      bottom: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 300px;
+      opacity: 0.08;
+      pointer-events: none;
+    }
+
+    .zodiac-wheel svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Features Section */
+    .features {
+      padding: var(--space-2xl) 0;
+      background: var(--bg-primary);
+      position: relative;
+    }
+
+    .features::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--ana-4), transparent);
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: var(--space-xl);
+    }
+
+    .section-header h2 {
+      color: var(--ana-2);
+      margin-bottom: var(--space-sm);
+    }
+
+    .section-header p {
+      color: var(--text-secondary);
+      margin: 0 auto;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--space-md);
+    }
+
+    .feature-card {
+      padding: var(--space-lg);
+      background: linear-gradient(135deg, oklch(99% 0.02 270), oklch(96% 0.04 267));
+      border: 1px solid oklch(90% 0.06 267);
+      border-radius: 24px;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--ana-1), var(--ana-4));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px oklch(47% 0.118 222 / 0.12);
+    }
+
+    .feature-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .feature-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--ana-5), var(--ana-4));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      margin-bottom: var(--space-md);
+    }
+
+    .feature-card h3 {
+      color: var(--ana-2);
+      margin-bottom: var(--space-xs);
+    }
+
+    .feature-card p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+
+    /* How it Works */
+    .how-it-works {
+      padding: var(--space-2xl) 0;
+      background: linear-gradient(180deg, var(--bg-primary) 0%, oklch(96% 0.04 267) 100%);
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-lg);
+      position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 60px;
+      left: 15%;
+      right: 15%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--ana-5), var(--ana-4), var(--ana-5));
+    }
+
+    .step {
+      text-align: center;
+      position: relative;
+    }
+
+    .step-number {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: var(--bg-primary);
+      border: 2px solid var(--ana-4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--space-md);
+      font-family: var(--font-display);
+      font-size: 3rem;
+      font-weight: 300;
+      color: var(--ana-1);
+      position: relative;
+      z-index: 1;
+    }
+
+    .step h3 {
+      color: var(--ana-2);
+      margin-bottom: var(--space-xs);
+    }
+
+    .step p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      margin: 0 auto;
+    }
+
+    /* Testimonials */
+    .testimonials {
+      padding: var(--space-2xl) 0;
+      background: var(--bg-dark);
+      color: var(--ana-6);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .testimonials::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 10% 90%, oklch(47% 0.118 222 / 0.3) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 30% at 90% 10%, oklch(57% 0.133 232 / 0.2) 0%, transparent 50%);
+    }
+
+    .testimonials .section-header h2 {
+      color: var(--ana-6);
+    }
+
+    .testimonials .section-header p {
+      color: oklch(80% 0.05 252);
+    }
+
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: var(--space-md);
+      position: relative;
+      z-index: 1;
+    }
+
+    .testimonial-card {
+      padding: var(--space-lg);
+      background: oklch(20% 0.05 252 / 0.5);
+      backdrop-filter: blur(20px);
+      border: 1px solid oklch(40% 0.08 252 / 0.3);
+      border-radius: 24px;
+    }
+
+    .testimonial-stars {
+      color: oklch(80% 0.15 80);
+      font-size: 1.25rem;
+      margin-bottom: var(--space-sm);
+      letter-spacing: 0.1em;
+    }
+
+    .testimonial-quote {
+      font-size: 1.125rem;
+      font-style: italic;
+      line-height: 1.8;
+      margin-bottom: var(--space-md);
+      color: oklch(90% 0.03 252);
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .testimonial-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--ana-1), var(--ana-3));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .testimonial-info strong {
+      display: block;
+      color: var(--ana-6);
+    }
+
+    .testimonial-info span {
+      font-size: 0.9rem;
+      color: oklch(60% 0.05 252);
+    }
+
+    /* Pricing */
+    .pricing {
+      padding: var(--space-2xl) 0;
+      background: var(--bg-primary);
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: var(--space-md);
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .pricing-card {
+      padding: var(--space-lg);
+      background: var(--bg-primary);
+      border: 1.5px solid oklch(88% 0.06 267);
+      border-radius: 24px;
+      text-align: center;
+      position: relative;
+      transition: all 0.4s ease;
+    }
+
+    .pricing-card.featured {
+      background: linear-gradient(135deg, oklch(97% 0.03 267), oklch(94% 0.05 252));
+      border-color: var(--ana-1);
+      transform: scale(1.05);
+      box-shadow: 0 24px 80px oklch(47% 0.118 222 / 0.2);
+    }
+
+    .pricing-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 0.5rem 1.5rem;
+      background: var(--ana-2);
+      color: var(--ana-6);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: 100px;
+    }
+
+    .pricing-card h3 {
+      color: var(--ana-2);
+      margin-bottom: var(--space-xs);
+    }
+
+    .pricing-card .price {
+      font-family: var(--font-display);
+      font-size: 3.5rem;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin: var(--space-sm) 0;
+    }
+
+    .pricing-card .price span {
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+
+    .pricing-card .price-note {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: var(--space-md);
+    }
+
+    .pricing-features {
+      list-style: none;
+      text-align: left;
+      margin-bottom: var(--space-md);
+    }
+
+    .pricing-features li {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid oklch(90% 0.04 267);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .pricing-features li::before {
+      content: '✦';
+      color: var(--ana-1);
+      font-size: 0.75rem;
+    }
+
+    /* FAQ */
+    .faq {
+      padding: var(--space-2xl) 0;
+      background: linear-gradient(180deg, oklch(96% 0.04 267) 0%, var(--bg-primary) 100%);
+    }
+
+    .faq-list {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid oklch(88% 0.06 267);
+      padding: var(--space-md) 0;
+    }
+
+    .faq-question {
+      width: 100%;
+      background: none;
+      border: none;
+      text-align: left;
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 450;
+      color: var(--ana-2);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0;
+    }
+
+    .faq-question::after {
+      content: '+';
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: var(--ana-1);
+      transition: transform 0.3s ease;
+    }
+
+    .faq-item.open .faq-question::after {
+      transform: rotate(45deg);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.4s ease;
+    }
+
+    .faq-item.open .faq-answer {
+      max-height: 300px;
+      padding-top: var(--space-sm);
+    }
+
+    .faq-answer p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+
+    /* CTA Section */
+    .cta {
+      padding: var(--space-2xl) 0;
+      background: var(--bg-dark);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 100%, oklch(47% 0.118 222 / 0.4) 0%, transparent 60%);
+    }
+
+    .cta-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta h2 {
+      color: var(--ana-6);
+      margin-bottom: var(--space-sm);
+    }
+
+    .cta p {
+      color: oklch(80% 0.05 252);
+      margin: 0 auto var(--space-md);
+    }
+
+    .cta .btn--primary {
+      background: var(--ana-1);
+      color: var(--bg-dark);
+    }
+
+    .cta .btn--primary:hover {
+      background: var(--ana-4);
+    }
+
+    /* Footer */
+    footer {
+      padding: var(--space-lg) 0;
+      background: oklch(10% 0.04 252);
+      color: oklch(60% 0.05 252);
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+    }
+
+    .footer-logo {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-style: italic;
+      color: var(--ana-4);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: var(--space-md);
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: oklch(60% 0.05 252);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--ana-4);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .steps {
+        grid-template-columns: 1fr;
+      }
+
+      .steps::before {
+        display: none;
+      }
+
+      .pricing-card.featured {
+        transform: none;
+      }
+
+      .hero h1 {
+        font-size: clamp(2.5rem, 10vw, 4rem);
+      }
+
+      .footer-content {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-on-scroll {
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards;
+    }
+
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+
+    /* Subdomain claim form */
+    .subdomain-claim {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .subdomain-input-wrapper {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      border: 2px solid var(--ana-4);
+      border-radius: 100px;
+      padding: 0.5rem 1.5rem;
+      box-shadow: 0 4px 24px oklch(47% 0.118 222 / 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .subdomain-input-wrapper:focus-within {
+      border-color: var(--ana-1);
+      box-shadow: 0 8px 32px oklch(47% 0.118 222 / 0.2);
+    }
+
+    .subdomain-input-wrapper input {
+      border: none;
+      outline: none;
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: var(--ana-2);
+      width: 140px;
+      text-align: right;
+      background: transparent;
+    }
+
+    .subdomain-input-wrapper input::placeholder {
+      color: var(--ana-4);
+    }
+
+    .subdomain-suffix {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    @media (max-width: 768px) {
+      .subdomain-input-wrapper {
+        flex-direction: column;
+        border-radius: 16px;
+        padding: 1rem;
+      }
+
+      .subdomain-input-wrapper input {
+        text-align: center;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav id="nav">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="#" class="logo">
+          <span class="logo-symbol">☽</span>
+          Celestial Whispers
+        </a>
+        <ul class="nav-links">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#how-it-works">How It Works</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#cta" class="btn btn--primary">Get Started</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="hero-gradient"></div>
+      <div class="celestial-orbs">
+        <div class="orb orb--1"></div>
+        <div class="orb orb--2"></div>
+        <div class="orb orb--3"></div>
+      </div>
+      <div class="stars" id="stars"></div>
+    </div>
+
+    <div class="container">
+      <div class="hero-content">
+        <p class="hero-eyebrow animate-on-scroll">AI-Powered Astrology</p>
+        <h1 class="animate-on-scroll delay-1">
+          Discover Your<br><em>Cosmic Blueprint</em>
+        </h1>
+        <p class="hero-subtitle animate-on-scroll delay-2">
+          Deeply personal natal chart readings powered by AI, with real-time transit guidance that speaks to who you truly are.
+        </p>
+        <div class="hero-cta animate-on-scroll delay-3">
+          <form id="claim-form" class="subdomain-claim">
+            <div class="subdomain-input-wrapper">
+              <input
+                type="text"
+                id="subdomain-input"
+                placeholder="yourname"
+                pattern="[a-z0-9-]+"
+                required
+              />
+              <span class="subdomain-suffix">.cronos.computer</span>
+            </div>
+            <button type="submit" class="btn btn--primary btn--large">
+              Claim Your Stars
+              <span>→</span>
+            </button>
+          </form>
+          <a href="#how-it-works" class="btn btn--secondary btn--large" style="margin-top: 1rem;">
+            See How It Works
+          </a>
+        </div>
+        <div class="hero-social-proof animate-on-scroll delay-4">
+          <div class="avatar-stack">
+            <span>♈</span>
+            <span>♌</span>
+            <span>♏</span>
+            <span>♒</span>
+          </div>
+          <span>Join 12,000+ seekers discovering their cosmic path</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="zodiac-wheel">
+      <svg viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 0 300 A 300 300 0 0 1 600 300" stroke="currentColor" stroke-width="1" fill="none" opacity="0.3"/>
+        <path d="M 50 300 A 250 250 0 0 1 550 300" stroke="currentColor" stroke-width="0.5" fill="none" opacity="0.2"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <h2>What Sets Us Apart</h2>
+        <p>More than horoscopes — we reveal the patterns that make you, you.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card animate-on-scroll delay-1">
+          <div class="feature-icon">☉</div>
+          <h3>AI Natal Chart Readings</h3>
+          <p>Our AI astrologer analyzes your complete birth chart to deliver readings that feel uncannily personal — the kind that makes you wonder "how did they know?"</p>
+        </div>
+
+        <div class="feature-card animate-on-scroll delay-2">
+          <div class="feature-icon">☽</div>
+          <h3>Transit-Aware Guidance</h3>
+          <p>Real-time planetary movements interpreted through your unique chart. Know exactly when to take action and when to pause.</p>
+        </div>
+
+        <div class="feature-card animate-on-scroll delay-3">
+          <div class="feature-icon">✦</div>
+          <h3>Personalized Cosmic Insights</h3>
+          <p>No generic sun sign readings. We weave your Sun, Moon, Rising, and all planetary placements into one cohesive narrative.</p>
+        </div>
+
+        <div class="feature-card animate-on-scroll delay-4">
+          <div class="feature-icon">☿</div>
+          <h3>Chat with the Stars</h3>
+          <p>Have a question about love, career, or timing? Our AI astrologer remembers your chart and responds with wisdom tailored to your cosmic DNA.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <h2>Your Journey Begins</h2>
+        <p>Three simple steps to unlock your celestial story.</p>
+      </div>
+
+      <div class="steps">
+        <div class="step animate-on-scroll delay-1">
+          <div class="step-number">1</div>
+          <h3>Enter Your Birth Data</h3>
+          <p>Date, time, and location — the coordinates of your cosmic moment.</p>
+        </div>
+
+        <div class="step animate-on-scroll delay-2">
+          <div class="step-number">2</div>
+          <h3>Receive Your Reading</h3>
+          <p>Our AI astrologer crafts your personalized natal interpretation.</p>
+        </div>
+
+        <div class="step animate-on-scroll delay-3">
+          <div class="step-number">3</div>
+          <h3>Explore & Ask</h3>
+          <p>Chat about transits, timing, and what the stars have to say.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <h2>Words from the Stars</h2>
+        <p>What our community is saying about their readings.</p>
+      </div>
+
+      <div class="testimonial-grid">
+        <div class="testimonial-card animate-on-scroll delay-1">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">"I've had readings from professional astrologers, but this AI captured something they missed — the tension between my Capricorn Moon and Leo Rising. Finally, someone gets me."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">♌</div>
+            <div class="testimonial-info">
+              <strong>Sarah M.</strong>
+              <span>Leo Sun, Capricorn Moon</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card animate-on-scroll delay-2">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">"The transit feature is incredible. It told me Saturn was squaring my natal Venus — and suggested I wait before making relationship decisions. That advice saved me."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">♏</div>
+            <div class="testimonial-info">
+              <strong>Marcus J.</strong>
+              <span>Scorpio Sun, Pisces Moon</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card animate-on-scroll delay-3">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">"This isn't generic astrology content. The reading identified my 'secret ambition hiding behind a desire to nurture others.' I actually cried. It was that accurate."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">♋</div>
+            <div class="testimonial-info">
+              <strong>Emma L.</strong>
+              <span>Cancer Sun, Aries Moon</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="pricing" id="pricing">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <h2>Choose Your Path</h2>
+        <p>Start with a free chart, or unlock the full celestial experience.</p>
+      </div>
+
+      <div class="pricing-grid">
+        <div class="pricing-card animate-on-scroll delay-1">
+          <h3>Stargazer</h3>
+          <div class="price">Free</div>
+          <p class="price-note">Get started instantly</p>
+          <ul class="pricing-features">
+            <li>Basic natal chart generation</li>
+            <li>Sun, Moon & Rising overview</li>
+            <li>One AI reading</li>
+            <li>Chart visualization</li>
+          </ul>
+          <a href="#cta" class="btn btn--secondary" style="width: 100%;">Try Free</a>
+        </div>
+
+        <div class="pricing-card featured animate-on-scroll delay-2">
+          <div class="pricing-badge">Most Popular</div>
+          <h3>Cosmic Oracle</h3>
+          <div class="price">$5<span>/month</span></div>
+          <p class="price-note">Billed monthly, cancel anytime</p>
+          <ul class="pricing-features">
+            <li>Everything in Stargazer</li>
+            <li>Unlimited AI readings</li>
+            <li>Real-time transit guidance</li>
+            <li>Unlimited chat sessions</li>
+            <li>Detailed aspect analysis</li>
+            <li>Priority support</li>
+          </ul>
+          <a href="#cta" class="btn btn--primary" style="width: 100%;">Start Free Trial</a>
+        </div>
+
+        <div class="pricing-card animate-on-scroll delay-3">
+          <h3>Celestial Master</h3>
+          <div class="price">$48<span>/year</span></div>
+          <p class="price-note">Save 20% — best value</p>
+          <ul class="pricing-features">
+            <li>Everything in Cosmic Oracle</li>
+            <li>Year-ahead transit forecast</li>
+            <li>Synastry (relationship) charts</li>
+            <li>Return chart analysis</li>
+            <li>Early feature access</li>
+          </ul>
+          <a href="#cta" class="btn btn--secondary" style="width: 100%;">Get Yearly</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq" id="faq">
+    <div class="container container--narrow">
+      <div class="section-header animate-on-scroll">
+        <h2>Questions? We've Got Answers</h2>
+      </div>
+
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question">How accurate are the AI readings?</button>
+          <div class="faq-answer">
+            <p>Our AI is trained on centuries of astrological wisdom and modern psychological insights. While no reading can be 100% predictive, users consistently report that our interpretations feel deeply personal and insightful — often more so than readings from human astrologers.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">Do I need to know my exact birth time?</button>
+          <div class="faq-answer">
+            <p>For the most accurate reading, yes. Your birth time determines your Rising sign and house placements. If you don't know it, we can still provide a reading based on your Sun and Moon signs, though it won't be as detailed.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">What are transits and why do they matter?</button>
+          <div class="faq-answer">
+            <p>Transits are the current planetary positions relative to your birth chart. They reveal the cosmic weather affecting you right now — when to push forward, when to reflect, and what themes are activated in your life. Our transit feature gives you personalized timing guidance.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">Can I cancel my subscription anytime?</button>
+          <div class="faq-answer">
+            <p>Absolutely. No contracts, no hidden fees. Cancel with one click and keep access until your billing period ends. We believe our readings speak for themselves.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">Is my birth data private?</button>
+          <div class="faq-answer">
+            <p>Completely. Your data is encrypted and stored locally on your device using Fireproof technology. We never sell or share your information with third parties. Your cosmic blueprint is yours alone.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta" id="cta">
+    <div class="container">
+      <div class="cta-content animate-on-scroll">
+        <h2>Ready to Meet Your Cosmic Self?</h2>
+        <p>Your stars are waiting. Claim your personal space in the cosmos.</p>
+        <form id="claim-form-bottom" class="subdomain-claim" style="margin-top: 2rem;">
+          <div class="subdomain-input-wrapper" style="background: oklch(20% 0.05 252); border-color: oklch(40% 0.1 252);">
+            <input
+              type="text"
+              id="subdomain-input-bottom"
+              placeholder="yourname"
+              pattern="[a-z0-9-]+"
+              required
+              style="color: #fff;"
+            />
+            <span class="subdomain-suffix" style="color: oklch(70% 0.08 252);">.cronos.computer</span>
+          </div>
+          <button type="submit" class="btn btn--primary btn--large">
+            Claim Your Stars
+            <span>→</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <span class="footer-logo">☽ Celestial Whispers</span>
+        <ul class="footer-links">
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Terms</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">Twitter</a></li>
+        </ul>
+        <span>© 2025 Celestial Whispers. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Subdomain detection - if on a subdomain, load the app
+    (function() {
+      const hostname = window.location.hostname;
+      const parts = hostname.split('.');
+
+      // If we have 3+ parts and it ends with cronos.computer, we're on a subdomain
+      // e.g. test9999.cronos.computer -> parts = ['test9999', 'cronos', 'computer']
+      if (parts.length >= 3 && parts[parts.length - 2] === 'cronos' && parts[parts.length - 1] === 'computer') {
+        const subdomain = parts[0];
+        if (subdomain !== 'www') {
+          window.location.replace('/app.html?subdomain=' + subdomain);
+        }
+      }
+    })();
+
+    // Generate stars
+    const starsContainer = document.getElementById('stars');
+    for (let i = 0; i < 50; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.animationDelay = Math.random() * 3 + 's';
+      star.style.animationDuration = (2 + Math.random() * 2) + 's';
+      starsContainer.appendChild(star);
+    }
+
+    // Nav scroll effect
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('nav');
+      if (window.scrollY > 50) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    });
+
+    // FAQ accordion
+    document.querySelectorAll('.faq-question').forEach(button => {
+      button.addEventListener('click', () => {
+        const item = button.parentElement;
+        item.classList.toggle('open');
+      });
+    });
+
+    // Intersection Observer for animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationPlayState = 'running';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+      el.style.animationPlayState = 'paused';
+      observer.observe(el);
+    });
+
+    // Subdomain claim form handlers
+    function handleClaimSubmit(e) {
+      e.preventDefault();
+      const input = e.target.querySelector('input');
+      const subdomain = input.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+      if (subdomain) {
+        window.location.href = `https://${subdomain}.cronos.computer`;
+      }
+    }
+
+    document.getElementById('claim-form').addEventListener('submit', handleClaimSubmit);
+    document.getElementById('claim-form-bottom').addEventListener('submit', handleClaimSubmit);
+
+    // Auto-lowercase input
+    document.querySelectorAll('.subdomain-input-wrapper input').forEach(input => {
+      input.addEventListener('input', (e) => {
+        e.target.value = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+      });
+    });
+  </script>
+</body>
+</html>
