@@ -1,4 +1,4 @@
-<img src="assets/logo.png" alt="cronos.computer logo" width="200">
+<img src="assets/logo.png" alt="cronos.computer logo" width="100%">
 
 # cronos.computer
 
