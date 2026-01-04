@@ -1,3 +1,5 @@
+<img src="assets/logo.png" alt="cronos.computer logo" width="200">
+
 # cronos.computer
 
 A birth chart calculator and astrology app. Enter your birth date, time, and location to generate your natal chart with planetary positions across the zodiac.
